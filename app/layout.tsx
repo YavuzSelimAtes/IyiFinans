@@ -8,6 +8,29 @@ export const metadata: Metadata = {
   title: 'İyi Finans',
   description: 'Teslimatını al, ödemeni yap',
   generator: 'İyi Finans Kampanya',
+
+  openGraph: {
+    title: 'İyi Finans', 
+    description: 'Teslimatını al, ödemeni yap', 
+    url: 'https://duranerkamates.vercel.app/', 
+    siteName: 'İyi Finans',
+    images: [
+      {
+        url: '/iyi-finans-logo.png', 
+        width: 1200,
+        height: 630,
+        alt: 'İyi Finans Kampanya Afişi',
+      },
+    ],
+    locale: 'tr_TR',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'İyi Finans',
+    description: 'Teslimatını al, ödemeni yap',
+    images: ['/iyi-finans-logo.png'], 
+  },
 }
 
 export default function RootLayout({
