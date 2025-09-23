@@ -6,12 +6,12 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'İyi Finans',
-  description: 'Teslimatını al, ödemeni yap',
+  description: 'Engelleri Kaldırıyoruz!',
   generator: 'İyi Finans Kampanya',
 
   openGraph: {
     title: 'İyi Finans', 
-    description: 'Teslimatını al, ödemeni yap', 
+    description: 'Engelleri Kaldırıyoruz!', 
     url: 'https://duranerkamates.vercel.app/', 
     siteName: 'İyi Finans',
     images: [
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'İyi Finans',
-    description: 'Teslimatını al, ödemeni yap',
+    description: 'Engelleri Kaldırıyoruz!',
     images: ['/iyi-finans-logo.png'], 
   },
 }
