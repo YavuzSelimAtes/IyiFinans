@@ -417,6 +417,7 @@ export default function IyiFinansCampaign() {
               </div>
             </div>
 
+            <span className="mr-2">      
             <Button
               onClick={handleCalculate}
               disabled={!investmentAmount || !selectedMonth}
@@ -425,7 +426,18 @@ export default function IyiFinansCampaign() {
             >
               Hesapla
             </Button>
+            </span>
+            <span className="ml-2">
+            <Button
+              onClick={handleReset}
+              variant="outline"
+              className="px-6 py-2 text-base hover:bg-secondary hover:text-secondary-foreground bg-transparent"
+            >
+              🔄 Geri Dön
+            </Button>
+            </span>
           </div>
+          
         </div>
       )}
     </div>
