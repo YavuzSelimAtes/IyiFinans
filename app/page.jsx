@@ -95,7 +95,7 @@ export default function IyiFinansCampaign() {
   }
 
   const numericAmount = parseNumber(investmentAmount)
-  const downPayment = numericAmount ? (Number.parseFloat(numericAmount) * 0.2).toLocaleString("tr-TR") : "0"
+  const downPayment = numericAmount ? (Number.parseFloat(numericAmount) * 0.2) : "0"
   const workingFee = numericAmount ? (Number.parseFloat(numericAmount) * 0.08) : "0"
 
   const generatePaymentSchedule = (isAfterDownPayment) => {
@@ -151,7 +151,7 @@ export default function IyiFinansCampaign() {
         const isDelivery = i === preMonths - 1
         schedule.push({
           number: i + 1,
-          amount: isDelivery ? (monthlyPayment + workingFee).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) :monthlyPayment.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+          amount: isDelivery ? `${monthlyPayment.toLocaleString("tr-TR", { maximumFractionDigits: 0, minimumFractionDigits: 0 })}` : `${monthlyPayment.toLocaleString("tr-TR", { maximumFractionDigits: 0, minimumFractionDigits: 0 })} `,
           month: isDelivery ? `${months[monthIndex]} (Teslimat)` : months[monthIndex],
         })
       }
@@ -165,7 +165,7 @@ export default function IyiFinansCampaign() {
         const monthIndex = (currentMonthIndex + preMonths + i) % 12
         schedule.push({
           number: paymentNumber++,
-          amount: phasePayment.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+          amount: phasePayment.toLocaleString("tr-TR"),
           month: months[monthIndex],
         })
       }
@@ -174,7 +174,7 @@ export default function IyiFinansCampaign() {
         const finalMonthIndex = (currentMonthIndex + preMonths + Math.max(0, postMonths - 1)) % 12
         schedule.push({
           number: paymentNumber,
-          amount: finalPayment.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+          amount: finalPayment.toLocaleString("tr-TR"),
           month: months[finalMonthIndex],
         })
       }
@@ -204,24 +204,29 @@ export default function IyiFinansCampaign() {
           <div className="flex items-center justify-center gap-4 text-2xl font-semibold mb-4">
             <span className="text-secondary">{selectedOption === "ev" ? "Konut" : "Araba"}</span>
             <span className="text-foreground">{investmentAmount} ₺</span>
-            <span className="text-accent">({monthOptions.find((m) => m.value === selectedMonth)?.label})</span>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-3" width="250">
             <div className="flex items-center justify-center gap-2">
-              <span className="text-primary font-semibold">{downPayment} ₺</span>
-              <span className="text-muted-foreground">Peşinat (%20)</span>
+              <span className="text-foreground font-semibold">Peşinat (İlk Ödeme)</span>
+              <span className="text-primary font-semibold text-xl">{downPayment.toLocaleString("tr-TR", { maximumFractionDigits: 0, minimumFractionDigits: 0 })} ₺</span>
             </div>
-            <div className="flex items-center justify-center gap-2">
-              <span className="text-accent font-semibold">{workingFee.toLocaleString("tr-TR")} ₺</span>
-              <span className="text-muted-foreground">Çalışma Bedeli (%8)</span>
-            </div>
+          </div>
+
+          <div className="text-center mt-6">
+            <Button
+              onClick={handleReset}
+              variant="outline"
+              className="px-6 py-2 text-base hover:bg-secondary hover:text-secondary-foreground bg-transparent"
+            >
+              🔄 Tekrar Hesapla
+            </Button>
           </div>
         </div>
 
         <div className="w-full max-w-2xl">
           <Tabs defaultValue="before" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-6">
+            <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="before" className="text-base">
                 Teslimat Öncesi
               </TabsTrigger>
@@ -230,55 +235,55 @@ export default function IyiFinansCampaign() {
               </TabsTrigger>
             </TabsList>
 
-            <div className="text-center mb-6">
-              <Button
-                onClick={handleReset}
-                variant="outline"
-                className="px-6 py-2 text-base hover:bg-secondary hover:text-secondary-foreground bg-transparent"
-              >
-                🔄 Tekrar Hesapla
-              </Button>
-            </div>
-
-            <TabsContent value="before" className="space-y-4">
-              <div className="bg-card rounded-lg p-6">
+            <TabsContent value="before">
+              <div className="bg-card rounded-lg p-3">
                 <div className="space-y-3">
-                  {generatePaymentSchedule(false).map((item) => (
-                    <div key={item.number} className="grid grid-cols-3 gap-4 py-2">
-                      <div className="text-center font-medium">{item.number}</div>
-                      <div className="text-center">{item.amount} ₺</div>
-                      <div className="text-center">{item.month}</div>
-                    </div>
-                  ))}
+                  {generatePaymentSchedule(false).map((item) => {
+                    const isDelivery = item.month.includes("Teslimat")
+                    return (
+                      <div
+                        key={item.number}
+                        className={`grid grid-cols-3 gap-4 py-2 ${isDelivery ? "rounded-t-lg font-bold bg-secondary/10 text-primary shadow-lg shadow-primary/80 flex items-center justify-center" : ""}`}
+                        style={isDelivery ? { color: "#1CCECB" } : {}}
+                      >
+                        <div className="text-center font-medium">{item.number}</div>
+                        <div className="text-center">{item.amount} ₺</div>
+                        <div className="text-center">{item.month}</div>
+                      </div>
+                    )
+                  })}
+                </div>
+
+                <div className="grid grid-cols-3 gap-4 py-2 bg-card rounded-b-lg shadow-lg shadow-secondary/30">
+                  <div className="text-center">Organizasyon ücreti</div>
+                  <div className="flex items-center justify-center">{Number(workingFee).toLocaleString("tr-TR", { maximumFractionDigits: 0, minimumFractionDigits: 0 })} ₺</div>
+                  <div className="text-center">Teslimatta öde</div>
                 </div>
 
                 <div className="mt-6 pt-4 border-t border-border space-y-3">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="text-center p-3 bg-secondary/10 rounded-lg">
                       <div className="text-base text-muted-foreground mb-1">Toplam Ödenen</div>
-                      <div className="text-xl font-semibold text-primary">
+                      <div className="text-base font-semibold text-primary">
                         {(() => {
                           const schedule = generatePaymentSchedule(false)
                           const total = schedule.reduce((sum, item) => {
                             return sum + Number.parseFloat(item.amount.replace(/\./g, "").replace(",", "."))
                           }, 0)
-                          return total.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                          return (total + workingFee + downPayment).toLocaleString("tr-TR")
                         })()} ₺
                       </div>
                     </div>
                     <div className="text-center p-3 bg-accent/10 rounded-lg">
                       <div className="text-base text-muted-foreground mb-1">Kalan</div>
-                      <div className="text-xl font-semibold text-accent">
+                      <div className="text-base font-semibold text-accent">
                         {(() => {
                           const schedule = generatePaymentSchedule(false)
                           const totalPaid = schedule.reduce((sum, item) => {
                             return sum + Number.parseFloat(item.amount.replace(/\./g, "").replace(",", "."))
                           }, 0)
-                          const remaining = Number.parseFloat(numericAmount) - totalPaid
-                          return remaining.toLocaleString("tr-TR", {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })
+                          const remaining = Number.parseFloat(numericAmount) - totalPaid - downPayment
+                          return remaining.toLocaleString("tr-TR")
                         })()} ₺
                       </div>
                     </div>
@@ -318,7 +323,7 @@ export default function IyiFinansCampaign() {
                         {(() => {
                           const amount = Number.parseFloat(numericAmount || "0")
                           const totalCost = amount * 1.08
-                          return totalCost.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                          return totalCost.toLocaleString("tr-TR")
                         })()} ₺
                       </div>
                     </div>
@@ -349,7 +354,7 @@ export default function IyiFinansCampaign() {
 
       {sloganComplete && !selectedOption && (
         <div className="text-center space-y-6">
-          <h2 className="text-2xl font-semibold text-foreground mb-6">Hangi Finansman?</h2>
+          <h2 className="text-2xl font-semibold text-foreground mb-6">Finansman Türü?</h2>
 
           <div className="flex gap-6">
             <Button
@@ -381,14 +386,14 @@ export default function IyiFinansCampaign() {
           <div className="space-y-6">
             <div className="space-y-4">
               <label className="text-lg font-medium text-foreground">Ne kadarlık yatırım yapacaksınız?</label>
-              <div className="flex items-center gap-4 max-w-md mx-auto">
+              <div className="flex items-center gap-4 max-w-md mx-auto ">
                 <Input
                   type="text"
-                  placeholder="Yatırım miktarı"
+                  placeholder="Finansman tutarınızı girin"
                   value={investmentAmount}
                   onChange={handleAmountChange}
                   onKeyPress={handleKeyPress}
-                  className="text-lg py-3"
+                  className="text-lg py-3 text-muted-foreground placeholder:text-muted-foreground/70"
                 />
                 <span className="text-lg font-medium">₺</span>
               </div>
@@ -399,7 +404,7 @@ export default function IyiFinansCampaign() {
               <div className="max-w-md mx-auto">
                 <Select value={selectedMonth} onValueChange={setSelectedMonth}>
                   <SelectTrigger className="text-lg py-3">
-                    <SelectValue placeholder="Teslim ayını seçin" />
+                    <SelectValue placeholder={<span className="text-muted-foreground/70 text-sm">Teslim ayını seçin</span>} />
                   </SelectTrigger>
                   <SelectContent>
                     {monthOptions.map((month) => (
