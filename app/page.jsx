@@ -361,7 +361,7 @@ export default function IyiFinansCampaign() {
               onClick={() => handleOptionSelect("ev")}
               variant="outline"
               size="lg"
-              className="px-8 py-4 text-lg hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+              className="px-8 py-4 text-lg hover:bg-primary hover:text-primary-foreground transition-all duration-300 shadow-lg shadow-primary/50"
             >
               🏠 Konut
             </Button>
@@ -369,7 +369,7 @@ export default function IyiFinansCampaign() {
               onClick={() => handleOptionSelect("araba")}
               variant="outline"
               size="lg"
-              className="px-8 py-4 text-lg hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+              className="px-8 py-4 text-lg hover:bg-primary hover:text-primary-foreground transition-all duration-300 shadow-lg shadow-primary/50"
             >
               🚗 Araba
             </Button>
@@ -393,7 +393,7 @@ export default function IyiFinansCampaign() {
                   value={investmentAmount}
                   onChange={handleAmountChange}
                   onKeyPress={handleKeyPress}
-                  className="text-lg py-3 text-muted-foreground placeholder:text-muted-foreground/70"
+                  className="text-sm py-3 text-muted-foreground placeholder:text-muted-foreground/70"
                 />
                 <span className="text-lg font-medium">₺</span>
               </div>
