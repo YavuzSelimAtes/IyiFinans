@@ -223,6 +223,21 @@ export default function IyiFinansCampaign() {
             </Button>
           </div>
         </div>
+        
+        <div className="flex flex-wrap justify-center gap-2 mb-6">
+              {monthOptions.map((month) => (
+                <button
+                  key={month.value}
+                  onClick={() => setSelectedMonth(month.value)}
+                  className={`px-4 py-2 rounded-lg font-semibold transition-colors text-sm ${selectedMonth === month.value
+                      ? 'bg-[#1CCECB] text-white' // Seçili olduğunda
+                      : 'bg-[#FFFFFF] text-gray-800 hover:bg-gray-300' // Seçili değilken
+                    }`}
+                >
+                  {month.label}
+                </button>
+              ))}
+            </div>
 
         <div className="w-full max-w-2xl">
           <Tabs defaultValue="before" className="w-full">
@@ -417,27 +432,27 @@ export default function IyiFinansCampaign() {
               </div>
             </div>
 
-            <span className="mr-2">      
-            <Button
-              onClick={handleCalculate}
-              disabled={!investmentAmount || !selectedMonth}
-              className="px-8 py-3 text-lg bg-primary hover:bg-secondary"
-              type="button"
-            >
-              Hesapla
-            </Button>
+            <span className="mr-2">
+              <Button
+                onClick={handleCalculate}
+                disabled={!investmentAmount || !selectedMonth}
+                className="px-8 py-3 text-lg bg-primary hover:bg-secondary"
+                type="button"
+              >
+                Hesapla
+              </Button>
             </span>
             <span className="ml-2">
-            <Button
-              onClick={handleReset}
-              variant="outline"
-              className="px-6 py-2 text-base hover:bg-secondary hover:text-secondary-foreground bg-transparent"
-            >
-              🔄 Geri Dön
-            </Button>
+              <Button
+                onClick={handleReset}
+                variant="outline"
+                className="px-6 py-2 text-base hover:bg-secondary hover:text-secondary-foreground bg-transparent"
+              >
+                🔄 Geri Dön
+              </Button>
             </span>
           </div>
-          
+
         </div>
       )}
     </div>
