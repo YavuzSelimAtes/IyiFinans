@@ -18,7 +18,6 @@ export default function IyiFinansCampaign() {
   const slogan = "İyi Gelecek"
 
   const monthOptions = [
-    { value: "2", label: "Şubat" },
     { value: "3", label: "Mart" },
     { value: "4", label: "Nisan" },
     { value: "5", label: "Mayıs" },
@@ -26,6 +25,7 @@ export default function IyiFinansCampaign() {
     { value: "7", label: "Temmuz" },
     { value: "8", label: "Ağustos" },
     { value: "9", label: "Eylül" },
+    { value: "10", label: "Ekim" },
   ]
 
   const formatNumber = (value) => {
@@ -106,14 +106,14 @@ export default function IyiFinansCampaign() {
     // Ev ve araba için aynı kurallar kullanılacak
     // 1.000.000 TL başına: preMonthly (teslimat öncesi), afterMonthly (teslimat sonrası sabit), final (son ay), totalTerm (toplam ay)
     const CONFIG = {
-      2: { preMonthly: 37000, afterMonthly: 44500, final: 88500, totalTerm: 18 },
-      3: { preMonthly: 31266, afterMonthly: 38766, final: 77180, totalTerm: 21 },
-      4: { preMonthly: 25600, afterMonthly: 33100, final: 65600, totalTerm: 25 },
-      5: { preMonthly: 22500, afterMonthly: 30000, final: 57500, totalTerm: 28 },
-      6: { preMonthly: 20000, afterMonthly: 27500, final: 50000, totalTerm: 31 },
-      7: { preMonthly: 18333, afterMonthly: 25833, final: 30011, totalTerm: 34 },
-      8: { preMonthly: 17667, afterMonthly: 22667, final: 43988, totalTerm: 37 },
-      9: { preMonthly: 16134, afterMonthly: 21134, final: 40800, totalTerm: 40 },
+      3: { preMonthly: 37000, afterMonthly: 44500, final: 88500, totalTerm: 18 },
+      4: { preMonthly: 31266, afterMonthly: 38766, final: 77180, totalTerm: 21 },
+      5: { preMonthly: 25600, afterMonthly: 33100, final: 65600, totalTerm: 25 },
+      6: { preMonthly: 22500, afterMonthly: 30000, final: 57500, totalTerm: 28 },
+      7: { preMonthly: 20000, afterMonthly: 27500, final: 50000, totalTerm: 31 },
+      8: { preMonthly: 18333, afterMonthly: 25833, final: 30011, totalTerm: 34 },
+      9: { preMonthly: 17667, afterMonthly: 22667, final: 43988, totalTerm: 37 },
+      10: { preMonthly: 16134, afterMonthly: 21134, final: 40800, totalTerm: 40 },
     }
     const config = CONFIG[deliveryMonth]
     if (!config) return []
@@ -139,7 +139,7 @@ export default function IyiFinansCampaign() {
     // Teslimat öncesi ay sayısı: bulunduğumuz aydan teslim ayına kadar (dahil)
     let preMonths = ((deliveryIndex - currentMonthIndex + 12) % 12) + 1
     // Eylül özel durumu: aynı ay seçilirse bir sonraki yıl Eylül kabul (13 ay)
-    if (deliveryMonth === 9 && currentMonthIndex === 8) {
+    if (deliveryMonth === 10 && currentMonthIndex === 9) {
       preMonths = 13
     }
 
