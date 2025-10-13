@@ -71,7 +71,7 @@ export default function IyiFinansCampaign() {
     } else {
       const delayTimer = setTimeout(() => {
         setSloganComplete(true)
-      }, 300); 
+      }, 300);
       return () => clearTimeout(delayTimer);
     }
   }, [displayedSlogan, slogan])
@@ -129,6 +129,18 @@ export default function IyiFinansCampaign() {
     setNotification("")
     setInstallmentType('sabit')
   }
+
+  const backToCampaign = () => {
+    setInvestmentAmount("")
+    setSelectedMonth("")
+    setShowCalculation(false)
+    setDownPaymentOption(null)
+    setRecalculatedPlanResult(null)
+    setInitialDownPaymentOption(null)
+    setNotification("")
+    setInstallmentType('sabit')
+  }
+
 
   const parseNumber = (formattedValue) => {
     if (!formattedValue) return ""
@@ -362,16 +374,7 @@ export default function IyiFinansCampaign() {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-start p-8">
         <div className="text-center mb-8">
-          <Image src="/enIyiKampanya-logo.png" alt="En İyi Kampanya" width={400} height={200} className="mx-auto mb-6" />
-          <h1 className="text-4xl font-bold">
-            {typedWords.map((wordElement, index) => (
-              <span key={index}>
-                {wordElement}
-                {index < words.length - 1 && ' '}
-              </span>
-            ))}
-            {!sloganComplete && <span className="animate-pulse">|</span>}
-          </h1>
+          <Image src="/enIyiKampanya-logo2.png" alt="En İyi Kampanya" width={400} height={200} className="mx-auto mb-6" />
         </div>
 
         <div className="text-center mb-6">
@@ -414,16 +417,17 @@ export default function IyiFinansCampaign() {
 
           <div className="text-center mt-6">
             <Button
-              onClick={handleReset}
+              onClick={backToCampaign}
               variant="outline"
               className="px-6 py-2 text-base hover:bg-secondary hover:text-secondary-foreground bg-transparent"
             >
-              🔄 Tekrar Hesapla
+              🔄 Kampanya Değiştir
             </Button>
           </div>
         </div>
 
         <div className="flex flex-wrap justify-center gap-2">
+          <h3 className="w-full text-center text-lg font-bold">Teslimat Ayını Seç</h3>
           {monthOptions.map((month) => (
             <button
               key={month.value}
@@ -456,7 +460,7 @@ export default function IyiFinansCampaign() {
               variant={installmentType === 'artisli' ? 'default' : 'outline'}
               className="transition-all"
             >
-              Artışlı Taksit
+              Teslimat Öncesi Düşük Taksit
             </Button>
           </div>
         )}
@@ -464,8 +468,45 @@ export default function IyiFinansCampaign() {
         {(downPaymentOption === 'pesinatsiz' || downPaymentOption === 'dusukpesinatli' || downPaymentOption === 'yuksekpesinatli') && (() => {
           // Peşinat oranı kontrolü
           const currentDownPaymentPercentage = numericAmount > 0 ? (downPayment / numericAmount) * 100 : 0;
+          
           if (currentDownPaymentPercentage >= 40) {
-            return null;
+
+            const beforeCount = generatePaymentSchedule(false).length
+            const afterCount = generatePaymentSchedule(true).length
+            const currentTotalTerm = beforeCount + afterCount
+
+            let currentPlan = {};
+            if (recalculatedPlanResult) {
+              currentPlan = recalculatedPlanResult;
+            } else {
+              const amount = Number.parseFloat(numericAmount);
+              const preMonths = beforeCount;
+              currentPlan = (downPaymentOption === 'pesinatsiz')
+                ? monthlyPP_WithoutDownPayment(amount, preMonths)
+                : monthlyPP_WithDownPayment(amount, preMonths);
+            }
+
+            return (
+              <div className="pt-4 space-y-4">
+                <div className="flex justify-center gap-4 pt-2 mb-2">
+                  <div className="flex flex-col items-center gap-1">
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        if (currentTotalTerm > 1) {
+                          handleRecalculatePlan(currentTotalTerm - 1, downPayment, currentPlan.afterMonthly)
+                        }
+                      }}
+                    >
+                      Peşinat bana göre fazla
+                    </Button>
+                    <p className="text-xs text-muted-foreground">
+                      Vadeyi kısaltın, peşinatı azaltın.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            );
           }
 
           // 1. Gerekli tüm değişkenler burada, en üstte hesaplanır
@@ -496,7 +537,7 @@ export default function IyiFinansCampaign() {
                       Taksit bana göre fazla
                     </Button>
                     <p className="text-xs text-muted-foreground">
-                      minimum peşinat ile taksitinizi düşürün
+                      Minimum peşinat ile taksitinizi düşürün.
                     </p>
                   </div>
                 ) : (
@@ -544,16 +585,11 @@ export default function IyiFinansCampaign() {
                 Teslimat Sonrası
               </TabsTrigger>
             </TabsList>
-            {downPaymentOption === 'dusukpesinatli' || downPaymentOption === 'yuksekpesinatli' && (
-              <p className="text-center text-lg font-semibold text-secondary mb-2">
-                Minimum Peşinat Maksimum Vade
-              </p>
-            )}
             <TabsContent value="before">
               <div className="bg-card rounded-lg p-3">
                 {downPaymentOption === 'pesinatsiz' && (
                   <>
-                    <div className="grid grid-cols-3 gap-4 py-2 bg-card rounded-lg shadow-lg shadow-secondary/30">
+                    <div className="grid grid-cols-3 gap-4 py-2 bg-card rounded-lg">
                       <div className="text-center">Organizasyon ücreti</div>
                       <div className="flex items-center justify-center">{Number(workingFee).toLocaleString("tr-TR", { maximumFractionDigits: 0, minimumFractionDigits: 0 })} ₺</div>
                       <div className="text-center"> Başlangıçta Ödenir</div>
@@ -579,7 +615,7 @@ export default function IyiFinansCampaign() {
 
                 {downPaymentOption === 'dusukpesinatli' && (
                   <>
-                    <div className="grid grid-cols-3 gap-4 py-2 bg-card rounded-lg shadow-lg shadow-secondary/30">
+                    <div className="grid grid-cols-3 gap-4 py-2 bg-card rounded-lg">
                       <div className="text-center">Organizasyon ücreti</div>
                       <div className="flex items-center justify-center">{Number(workingFee).toLocaleString("tr-TR", { maximumFractionDigits: 0, minimumFractionDigits: 0 })} ₺</div>
                       <div className="text-center"> Başlangıçta Ödenir</div>
@@ -740,23 +776,32 @@ export default function IyiFinansCampaign() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-8">
-      <div className="text-center mb-8">
-        <Image src="/enIyiKampanya-logo.png" alt="En İyi Kampanya" width={400} height={200} className="mx-auto mb-6" />
 
-        <div className="h-16 flex items-center justify-center mb-8">
-          <h1 className="text-4xl font-bold">
-            {typedWords.map((wordElement, index) => (
-              <span key={index}>
-                {wordElement}
-                {index < words.length - 1 && ' '}
-              </span>
-            ))}
-            {!sloganComplete && <span className="animate-pulse">|</span>}
-          </h1>
+      {!selectedOption && (
+        <div className="text-center mb-8">
+          <Image src="/enIyiKampanya-logo.png" alt="En İyi Kampanya" width={400} height={200} className="mx-auto mb-6" />
+
+          <div className="h-16 flex items-center justify-center mb-4">
+            <h1 className="text-4xl font-bold">
+              {typedWords.map((wordElement, index) => (
+                <span key={index}>
+                  {wordElement}
+                  {index < words.length - 1 && ' '}
+                </span>
+              ))}
+              {!sloganComplete && <span className="animate-pulse">|</span>}
+            </h1>
+          </div>
         </div>
-      </div>
+      )}
 
-      {sloganComplete && !selectedOption && (
+      {selectedOption && (
+        <div className="text-center mb-8">
+          <Image src="/enIyiKampanya-logo2.png" alt="En İyi Kampanya" width={400} height={200} className="mx-auto mb-6" />
+        </div>
+      )}
+
+      {sloganComplete && !selectedOption && !downPaymentOption && !showCalculation && (
         <div className="text-center space-y-6">
           <h2 className="text-2xl font-semibold text-foreground mb-6">Finansman Türü?</h2>
 
@@ -849,10 +894,10 @@ export default function IyiFinansCampaign() {
                   }}
                   thousandSeparator="."
                   decimalSeparator=","
-                  customInput={Input} // Bu, bizim kendi Input component'imizi kullanmasını sağlar
+                  customInput={Input}
                   placeholder="Finansman tutarınızı girin"
-                  className="text-sm py-3 text-muted-foreground placeholder:text-muted-foreground/70"
-                  onFocus={(e) => e.target.select()} // Tıklayınca tüm yazıyı seçer
+                  className="py-3 text-muted-foreground placeholder:text-muted-foreground/70"
+                  onFocus={(e) => e.target.select()}
                 />
                 <span className="text-lg font-medium">₺</span>
               </div>
