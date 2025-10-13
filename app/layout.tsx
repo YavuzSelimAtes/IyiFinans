@@ -5,21 +5,21 @@ import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'İyi Finans',
-  description: 'Engelleri Kaldırıyoruz!',
-  generator: 'İyi Finans Kampanya',
+  title: 'En İyi Kampanya',
+  description: 'Sen Evine Erken Kavuş Diye!',
+  generator: 'En İyi Kampanya',
 
   openGraph: {
-    title: 'İyi Finans', 
-    description: 'Engelleri Kaldırıyoruz!', 
-    url: 'https://duranerkamates.vercel.app/', 
-    siteName: 'İyi Finans',
+    title: 'En İyi Kampanya', 
+    description: 'Sen Evine Erken Kavuş Diye!', 
+    url: 'https://eniyikampanya.vercel.app/', 
+    siteName: 'En İyi Kampanya',
     images: [
       {
-        url: '/iyi-finans-logo.png', 
+        url: '/enIyiKampanya-logo.png', 
         width: 1200,
         height: 630,
-        alt: 'İyi Finans Kampanya Afişi',
+        alt: 'En İyi Kampanya Afişi',
       },
     ],
     locale: 'tr_TR',
@@ -27,9 +27,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'İyi Finans',
-    description: 'Engelleri Kaldırıyoruz!',
-    images: ['/iyi-finans-logo.png'], 
+    title: 'En İyi Kampanya',
+    description: 'Sen Evine Erken Kavuş Diye!',
+    images: ['/enIyiKampanya-logo.png'], 
   },
 }
 
